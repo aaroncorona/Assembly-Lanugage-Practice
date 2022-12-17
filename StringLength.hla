@@ -1,10 +1,6 @@
 /*
-Name: Aaron Corona
-Course: CS17 1753  
-Date: Dec 5, 2022  
-Purpose: Finding the number of chars in a String
-Input: The word length and word
-Output: The number of chars
+Authoer: Aaron Corona
+Purpose: Find the number of chars in a String, allocate memory for the array approriately
 */
 
 program StringLength;
