@@ -1,0 +1,61 @@
+/*
+Name: Aaron Corona
+Course: CS17 1753  
+Date: Nov 26, 2022  
+Purpose: Compute the rolling average
+Input: numbers to check
+Output: The rolling avg
+*/
+
+program RollingAvg;
+#include( "stdlib.hhf" );
+static
+  input : real32 := 0;
+  inputs : int32 := 0;
+  runningTotal : real32 := 0;
+  runningAvg : real32 := 0;
+
+////////////////////////////
+// Main Program
+////////////////////////////
+begin RollingAvg;
+
+// Loop that continually checks for more inputs and updates the running avg
+StartLoop:
+    // First, get the input
+	stdout.put( "Enter data point: " );
+	stdin.get( input );
+
+	// Add input to running total to be able to compute the Rolling Avg 
+    finit();
+	fld( input );    
+	fld( runningTotal ); 
+	fadd();
+	fstp( runningTotal );
+	inc( inputs );
+
+	// Compute the Rolling Avg 
+	fld( runningTotal );    
+	fild( inputs ); 
+	fdiv();
+	fstp( runningAvg );
+
+	// Print the Rolling Avg
+	stdout.put( "Rolling avg =" );
+	stdout.putr32( runningAvg, 10, 3 );
+	stdout.put( nl );
+
+	// Check for another input
+	stdout.put( "More data? (enter y or n): " );
+	mov( 0, EAX );
+	stdin.flushInput();
+	stdin.getc();
+	cmp( AL, 121 ); // y = 121 in ASCII
+	je StartLoop;
+	jmp EndProgram;
+
+EndProgram:
+	stdout.put( "Final Rolling avg =" );
+	stdout.putr32( runningAvg, 10, 3 );
+
+end RollingAvg;
