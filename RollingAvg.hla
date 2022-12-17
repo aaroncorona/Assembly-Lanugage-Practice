@@ -1,5 +1,5 @@
 /*
-Authoer: Aaron Corona
+Author: Aaron Corona
 Purpose: Compute a continual rolling avg from user input using the FPU registers
 */
 
