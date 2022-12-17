@@ -1,10 +1,6 @@
 /*
-Name: Aaron Corona
-Course: CS17 1753  
-Date: Nov 26, 2022  
-Purpose: Compute the rolling average
-Input: numbers to check
-Output: The rolling avg
+Authoer: Aaron Corona
+Purpose: Compute a continual rolling avg from user input using the FPU registers
 */
 
 program RollingAvg;
