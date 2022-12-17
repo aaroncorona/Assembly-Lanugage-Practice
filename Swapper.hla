@@ -1,10 +1,6 @@
 /*
-Name: Aaron Corona
-Course: CS17 1753  
-Date: Dec 5, 2022  
-Purpose: Order 3 numbers by swapping their values
-Input: 3 numbers
-Output: The 3 numbers ordered largest to smallest
+Authoer: Aaron Corona
+Purpose: Take 3 inputs and put them in asc order by directly swapping their values in memory
 */
 
 program Swapper;
