@@ -1,10 +1,6 @@
 /*
-Name: Aaron Corona
-Course: CS17 1753  
-Date: Nov 10th, 2022  
-Purpose: Return the distance between 2 points
-Input: x1, x2, y1, y2
-Output: Distance
+Authoer: Aaron Corona
+Purpose: Return the distance between 2 points using the distance formula and the FPU registers
 */
 
 program Area;
