@@ -1,0 +1,231 @@
+/*
+Name: Aaron Corona
+Course: CS17 1753  
+Date: Dec 5, 2022  
+Purpose: Order 3 numbers by swapping their values
+Input: 3 numbers
+Output: The 3 numbers ordered largest to smallest
+*/
+
+program Swapper;
+#include( "stdlib.hhf" );
+
+static
+  x: int16 := 0;
+  y: int16 := 0;
+  z: int16 := 0;
+
+////////////////////////////
+// Function orderNumbers
+////////////////////////////
+// Puts the 3 input values in desc order and return 1 if a swap was made to order them
+procedure orderNumbers( x : int16; y : int16; z : int16 ); @nodisplay; @noframe; 
+static
+  // Addresses
+  returnAddress : dword;
+  xAddress : dword;
+  yAddress : dword;
+  zAddress : dword;
+  // Register Cache
+  cacheEBX : int32;
+  cacheECX : int32;
+  cacheEDX : int32;
+  // Results
+  smallest: int16 := 0;
+  medium: int16 := 0;
+  largest: int16 := 0;
+  isOrderChanged : int8 := 0;
+
+  begin orderNumbers;
+
+	// Preserve registers
+	mov( EBX, cacheEBX );
+	mov( ECX, cacheECX );
+	mov( EDX, cacheEDX );
+
+	// Get params, which are addresses
+	pop( returnAddress );
+	pop( EDX );
+	pop( ECX );
+	pop( EBX );
+	push( returnAddress );
+
+	// Store the addresses
+	mov( EBX, xAddress );
+	mov( ECX, yAddress );
+	mov( EDX, zAddress );
+
+	// Dereference the values
+    mov( [EBX], x );
+    mov( [ECX], y );
+    mov( [EDX], z );
+    // Copy the values into the registers as well to use the cmp function
+    mov( 0, EBX );
+    mov( 0, ECX );
+    mov( 0, EDX );
+    mov( x, BX );
+    mov( y, CX );
+    mov( z, DX );
+
+    // Find the Min number out of the 3
+    GetSmallest:
+    check1vs2Smallest:
+		cmp( BX, y );
+		jg check2vs3Smallest;
+
+	check1vs3Smallest: // input1 < input2, so check if 1 vs 3 to see which is the min
+		cmp( BX, z );	
+		jle XisSmallest; 
+		jmp ZisSmallest;
+
+    check2vs3Smallest:
+		cmp( CX, z );
+		jle YisSmallest;
+		jmp ZisSmallest;
+
+    XisSmallest:
+    	mov( BX, smallest );
+    	mov( 1, isOrderChanged );
+    	jmp GetMedium;
+
+    YisSmallest:
+    	mov( CX, smallest );
+    	mov( 1, isOrderChanged );
+    	jmp GetMedium;
+
+    ZisSmallest:
+    	mov( DX, smallest );
+    	jmp GetMedium;
+
+    // Find the second smallest num
+	GetMedium:
+	    // Check the remaining 2 numbers
+        cmp( BX, smallest ); 
+        je check2vs3Medium;
+        cmp( CX, smallest ); 
+        je check1vs3Medium;
+        cmp( DX, smallest ); 
+        je check1vs2Medium;
+
+    check1vs2Medium:
+    	cmp( BX, y );
+    	jle XisMedium;
+    	jmp YisMedium;
+
+    check2vs3Medium:
+    	cmp( CX, z ); 
+    	jle YisMedium;
+    	jmp ZisMedium;
+
+    check1vs3Medium:
+   		cmp( BX, z ); 
+   		jle XisMedium;
+   		jmp ZisMedium;
+
+    XisMedium:
+    	mov( BX, medium );
+    	mov( 1, isOrderChanged );
+    	jmp GetLargest;
+
+    YisMedium:
+    	mov( CX, medium );
+    	jmp GetLargest;
+
+    ZisMedium:
+    	mov( DX, medium );
+    	mov( 1, isOrderChanged );
+    	jmp GetLargest;
+
+    // Get the largest number
+    GetLargest:
+	    // Find the remaining number, which must be the max
+        cmp( BX, smallest ); 
+        je check2vs3Largest;
+        cmp( CX, smallest ); 
+        je check1vs3Largest;
+        cmp( DX, smallest ); 
+        je check1vs2Largest;
+
+    check1vs2Largest:
+    	cmp( BX, medium );
+    	je YisLargest;
+    	jmp XisLargest;
+
+    check2vs3Largest:
+    	cmp( CX, medium );
+    	je ZisLargest;
+    	jmp YisLargest;
+
+    check1vs3Largest:
+    	cmp( BX, medium );
+    	je ZisLargest;
+    	jmp XisLargest;
+
+    XisLargest:
+    	mov( BX, largest );
+    	jmp OrderNums;
+
+    YisLargest:
+    	mov( CX, largest );
+    	mov( 1, isOrderChanged );
+    	jmp OrderNums;
+
+    ZisLargest:
+    	mov( DX, largest );
+    	mov( 1, isOrderChanged );
+    	jmp OrderNums;
+
+    // Next, reorder the nums as indicated above
+    OrderNums:
+
+        // Check if no change is needed
+	    cmp( isOrderChanged, 0 );
+	    je Return;
+
+        // Update values (by reference) to put them in desc order
+        mov( xAddress, EBX ); 
+        mov( yAddress, ECX ); 
+        mov( zAddress, EDX ); 
+        mov( largest, [EBX] );
+        mov( medium, [ECX] );
+        mov( smallest, [EDX] );
+
+    // Lastly, put the result in AL, restore registers, and return
+    Return:
+        mov( isOrderChanged, AL );
+		mov( cacheEBX, EBX );
+		mov( cacheECX, ECX );
+		mov( cacheEDX, EDX );
+		ret();
+
+  end orderNumbers;
+
+////////////////////////////
+// Main Program
+////////////////////////////
+begin Swapper;
+
+  // Get the 3 input numbers
+  stdout.put( "Gimme x: " );
+  stdin.get( x );
+  stdout.put( "Gimme y: " );
+  stdin.get( y );
+  stdout.put( "Gimme z: " );
+  stdin.get( z );
+
+  // Call the function to order x, y, and z and pass those variables by reference
+  mov( &x, EAX );
+  push( EAX );
+  mov( &y, EBX );
+  push( EBX );
+  mov( &z, ECX );
+  push( ECX );
+  call orderNumbers;
+
+  // Print the result
+  stdout.put( "AL = " );
+  stdout.puti8( AL );
+  stdout.newln();
+  stdout.put( "After sorting, x = ", x, ", y = ", y, ", z = ", z);
+
+end Swapper;
