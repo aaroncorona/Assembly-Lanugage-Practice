@@ -1,0 +1,95 @@
+/*
+Name: Aaron Corona
+Course: CS17 1753  
+Date: Dec 5, 2022  
+Purpose: Finding the number of chars in a String
+Input: The word length and word
+Output: The number of chars
+*/
+
+program StringLength;
+#include( "stdlib.hhf" );
+#include( "cs17string.hla" );
+
+static
+  arrSize: int8 := 0; // the num of array elements
+  arrSizeMax : uns16 := 32; // max number of chars
+  arrAddress : dword := 0; // holds base address of the String
+
+
+////////////////////////////
+// Function getStringLength
+////////////////////////////
+// This returns the size of a String (i.e. the num of chars)
+procedure getStringLength( baseStringAddress: dword ); @nodisplay; @noframe;
+static
+  returnAddress : dword;
+  cacheEBX : int32;
+
+  begin getStringLength;
+
+	// Preserve EBX
+	mov( EBX, cacheEBX);
+
+	// Get params
+	pop( returnAddress );
+	pop( EAX ); // corresponds to the string Address Parameter		
+	push( returnAddress );
+
+	// Count the string length
+	LoopStart:
+	mov( 0, EBX );
+	mov( 0, BH ); // BH is a null character to check for the end of the String
+	mov( 0, BL ); // BL is the loop index and char counter
+	LoopTerminationClause:
+	cmp( [ EAX ], BH );
+	je LoopEnd;
+	// Increment
+	inc( BL );
+	inc( EAX ); // EAX has the String address, so increase the pos by 1
+	jmp LoopTerminationClause;
+	LoopEnd:
+
+	// Put the length result in AL
+	mov( 0, EAX );
+	mov( BL, AL );
+
+    // Restore EBX and return
+	mov( cacheEBX, EBX);
+	ret();
+
+  end getStringLength;
+
+////////////////////////////
+// Main Program
+////////////////////////////
+begin StringLength;
+
+  // Calculate the size of the array (String) to allocate in Heap memory
+  stdout.put( "Gimme a size for your array: " );
+  stdin.get( arrSize );
+  mov( @size( int8 ), AL );
+  mov( arrSize, BL );
+  mul( BL ); // result is in AX
+  mov( 0, EBX ); // copy over to EBX
+  mov( AX, BX );
+
+  // Allocate memory for the String
+  malloc( EBX );
+  mov( EAX, arrAddress );
+
+  // Get the word input as a String 
+  push( arrAddress );
+  push( arrSizeMax );
+  stdout.put( "Gimme a word: " );
+  call gets; // this returns the String in the stringAddress slot
+
+  // Call the function to return the String length
+  push( arrAddress ); // pass by reference the String 
+  call getStringLength; // returns in AL
+
+  // Print the result
+  stdout.puti8( AL );
+  stdout.newln();
+
+end StringLength;
