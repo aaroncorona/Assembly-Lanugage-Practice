@@ -1,0 +1,57 @@
+/*
+Name: Aaron Corona
+Course: CS17 1753  
+Date: Nov 10th, 2022  
+Purpose: Return the distance between 2 points
+Input: x1, x2, y1, y2
+Output: Distance
+*/
+
+program Area;
+#include( "stdlib.hhf" );
+static
+  x1 : real32 := 0;
+  x2 : real32 := 0;
+  y1 : real32 := 0;
+  y2 : real32 := 0;
+  temp : real32 := 0;
+  distResult : real32 := 0;
+
+////////////////////////////
+// Main Program
+////////////////////////////
+begin Area;
+
+  // Get shape size inputs
+  stdout.put( "Feed me x1: " );
+  stdin.get( x1 );
+  stdout.put( "Feed me x2: " );
+  stdin.get( x2 );
+  stdout.put( "Feed me y1: " );
+  stdin.get( y1 );
+  stdout.put( "Feed me y2: " );
+  stdin.get( y2 );
+
+  // Use FUP to compute the distance formula sqrt((x1-x2)^2 + (y1-y2)^2)
+  finit();
+  fld( x1 );
+  fld( x2 );
+  fsub(); // Compute x1-x2
+  fst( temp ); // store temporarily to multiply by itself
+  fld( temp );
+  fmul(); // Compute (x1-x2)^2
+  fld( y1 );
+  fld( y2 );
+  fsub(); // Compute y1-y2
+  fst( temp ); // store temporarily to multiply by itself
+  fld( temp );
+  fmul(); // Compute (y1-y2)^2
+  fadd(); // Compute ((x1-x2)^2) + ((y1-y2)^2)
+  fsqrt(); // Compute sqrt((x1-x2)^2 + (y1-y2)^2)
+  fstp( distResult ); // Store result in distResult
+
+  // Print result
+  stdout.put( "The distance between points A and B is " );
+  stdout.put( distResult, nl );
+  
+end Area;
